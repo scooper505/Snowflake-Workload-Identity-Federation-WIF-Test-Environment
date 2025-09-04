@@ -84,20 +84,16 @@ snowflake_account_name      = "SECURITYLAB2"
 snowflake_role              = "SECURITYADMIN"
 snowflake_username          = "SCOOP_TF_AUTOMATION"
 
-# Key-pair auth
-snowflake_private_key_path       = "/Users/scooper/.snowflake/keys/snowflake_tf_key.p8"
-snowflake_private_key_passphrase = "your-private-key-passphrase"
 
-# OR OAuth example (uncomment if using OAuth instead)
-# snowflake_oauth_token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
+
 
 # _____WIF TEST USER_____
-wif_user_name         = "SCOOP_WIF_TEST_USER"
-wif_user_login_name   = "SCOOP_WIF_TEST_USER"
-wif_role_name         = "SCOOP_WIF_TF_TEST_ROLE"
-wif_default_warehouse = "BI_MEDIUM_WH"
-wif_test_database     = "CITIBIKE"
-wif_test_schema       = "DEMO"
+wif_user_name         = "YOUR WIF USER NAME"
+wif_user_login_name   = "YOUR WIF USER LOGIN"
+wif_role_name         = "YOUR ROLE NAME"
+wif_default_warehouse = "YOUR WAREHOUSE"
+wif_test_database     = "YOUR DB"
+wif_test_schema       = "YOUR SCHEMA"
 ```
 
 ### Optional Variables
