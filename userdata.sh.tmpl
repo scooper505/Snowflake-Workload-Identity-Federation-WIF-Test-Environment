@@ -3,8 +3,8 @@ set -euxo pipefail
 
 # --- constants/paths ---
 APP_DIR="/opt/snowflake-test"
-VENV_DIR="${APP_DIR}/venv"
-TEST_SCRIPT="${APP_DIR}/test_snowflake.py"
+VENV_DIR="$${APP_DIR}/venv"
+TEST_SCRIPT="$${APP_DIR}/test_snowflake.py"
 
 # --- base packages & python install (Amazon Linux 2023 or Ubuntu 22.04) ---
 if command -v dnf >/dev/null 2>&1; then
@@ -32,17 +32,17 @@ print(f"Python version OK: {sys.version.split()[0]}")
 PY
 
 # --- app layout & venv ---
-install -d -m 0755 "${APP_DIR}"
-$PYBIN -m venv "${VENV_DIR}"
-source "${VENV_DIR}/bin/activate"
+install -d -m 0755 "$${APP_DIR}"
+$PYBIN -m venv "$${VENV_DIR}"
+source "$${VENV_DIR}/bin/activate"
 python -m pip install --upgrade pip
 python -m pip install "snowflake-connector-python>=3.14"
 
 # --- drop test script from templated content ---
-cat > "${TEST_SCRIPT}" <<'PYEOF'
+cat > "$${TEST_SCRIPT}" <<'PYEOF'
 ${test_script}
 PYEOF
-chmod 0755 "${TEST_SCRIPT}"
+chmod 0755 "$${TEST_SCRIPT}"
 
 # --- convenience env for shell sessions ---
 cat > /etc/profile.d/snowflake-test.sh <<EOF
@@ -65,5 +65,5 @@ else
   systemctl restart amazon-ssm-agent || true
 fi
 
-echo "Bootstrap complete. Activate venv with: source ${VENV_DIR}/bin/activate"
-echo "Run test with: ${TEST_SCRIPT}"
+echo "Bootstrap complete. Activate venv with: source $${VENV_DIR}/bin/activate"
+echo "Run test with: $${TEST_SCRIPT}"

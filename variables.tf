@@ -148,9 +148,3 @@ variable "aws_wif_role_arn" {
   type        = string
   default     = ""
 }
-
-# (Commented) Security integration variables for later
-# variable "wif_security_integration_name" { type = string, default = "WIF_OAUTH_INT" }
-# variable "external_oauth_issuer"        { type = string }
-# variable "external_oauth_jwks_url"      { type = string }
-# variable "external_oauth_audience"      { type = string }

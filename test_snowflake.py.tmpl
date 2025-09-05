@@ -29,20 +29,7 @@ def main():
         
         # Set context (warehouse, database, schema)
         print("Setting Snowflake context...")
-        %{ if wif_default_warehouse != null ~}
-        cur.execute("USE WAREHOUSE ${wif_default_warehouse}")
-        print("  ✅ Using warehouse: ${wif_default_warehouse}")
-        %{ endif ~}
-        
-        %{ if wif_test_database != null ~}
-        cur.execute("USE DATABASE ${wif_test_database}")
-        print("  ✅ Using database: ${wif_test_database}")
-        %{ endif ~}
-        
-        %{ if wif_test_schema != null ~}
-        cur.execute("USE SCHEMA ${wif_test_schema}")
-        print("  ✅ Using schema: ${wif_test_schema}")
-        %{ endif ~}
+        ${context_setup}
         
         # Execute test queries
         print("\nExecuting test queries...")
@@ -65,14 +52,7 @@ def main():
         print(f"  Schema: {identity[5]}")
         
         # Test query on actual data (if available)
-        %{ if wif_test_database != null && wif_test_schema != null ~}
-        try:
-            cur.execute("SELECT COUNT(*) as table_count FROM information_schema.tables WHERE table_schema = '${wif_test_schema}'")
-            table_count = cur.fetchone()
-            print(f"  Tables in schema: {table_count[0]}")
-        except Exception as e:
-            print(f"  Schema query info: {str(e)}")
-        %{ endif ~}
+        ${schema_test_query}
         
         cur.close()
         conn.close()
