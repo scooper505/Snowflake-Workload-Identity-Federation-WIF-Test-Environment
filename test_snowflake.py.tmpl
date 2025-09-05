@@ -1,51 +1,93 @@
 #!/usr/bin/env python3
-import os, sys
-import snowflake.connector as sf
+"""
+Simplified Snowflake WIF Test Script
+Tests Workload Identity Federation (WIF) connection from AWS EC2 to Snowflake
+"""
+import os
+import snowflake.connector
 
-def getenv(k, default=None, required=False):
-    v = os.getenv(k, default)
-    if required and not v:
-        print(f"Missing required env var: {k}", file=sys.stderr)
-        sys.exit(2)
-    return v
+def main():
+    print("Starting Snowflake WIF Connection Test...")
+    print(f"Snowflake Connector Version: {snowflake.connector.__version__}")
+    
+    try:
+        # Enable Workload Identity Federation (WIF)
+        os.environ["SF_ENABLE_EXPERIMENTAL_AUTHENTICATION"] = "true"
+        
+        # Connect to Snowflake using WIF
+        print("Attempting WIF connection...")
+        conn = snowflake.connector.connect(
+            account='${snowflake_organization_name}-${snowflake_account_name}.privatelink',
+            authenticator='WORKLOAD_IDENTITY',
+            workload_identity_provider='AWS'  # Provider is optional since the driver is capable of auto discovering
+        )
+        
+        print("✅ WIF Connection established successfully!")
+        
+        # Create a cursor
+        cur = conn.cursor()
+        
+        # Set context (warehouse, database, schema)
+        print("Setting Snowflake context...")
+        %{ if wif_default_warehouse != null ~}
+        cur.execute("USE WAREHOUSE ${wif_default_warehouse}")
+        print("  ✅ Using warehouse: ${wif_default_warehouse}")
+        %{ endif ~}
+        
+        %{ if wif_test_database != null ~}
+        cur.execute("USE DATABASE ${wif_test_database}")
+        print("  ✅ Using database: ${wif_test_database}")
+        %{ endif ~}
+        
+        %{ if wif_test_schema != null ~}
+        cur.execute("USE SCHEMA ${wif_test_schema}")
+        print("  ✅ Using schema: ${wif_test_schema}")
+        %{ endif ~}
+        
+        # Execute test queries
+        print("\nExecuting test queries...")
+        
+        # Basic timestamp query
+        cur.execute("SELECT current_timestamp()")
+        result = cur.fetchone()
+        print(f"  Current timestamp: {result[0]}")
+        
+        # Identity verification query
+        cur.execute("SELECT current_user(), current_account(), current_role(), current_warehouse(), current_database(), current_schema()")
+        identity = cur.fetchone()
+        
+        print(f"\n🎉 WIF Connection Successful!")
+        print(f"  User: {identity[0]}")
+        print(f"  Account: {identity[1]}")  
+        print(f"  Role: {identity[2]}")
+        print(f"  Warehouse: {identity[3]}")
+        print(f"  Database: {identity[4]}")
+        print(f"  Schema: {identity[5]}")
+        
+        # Test query on actual data (if available)
+        %{ if wif_test_database != null && wif_test_schema != null ~}
+        try:
+            cur.execute("SELECT COUNT(*) as table_count FROM information_schema.tables WHERE table_schema = '${wif_test_schema}'")
+            table_count = cur.fetchone()
+            print(f"  Tables in schema: {table_count[0]}")
+        except Exception as e:
+            print(f"  Schema query info: {str(e)}")
+        %{ endif ~}
+        
+        cur.close()
+        conn.close()
+        print("\n✅ WIF test completed successfully! Connection and permissions verified.")
+        
+    except Exception as e:
+        print(f"\n❌ WIF Connection Failed: {str(e)}")
+        print("\nTroubleshooting tips:")
+        print("1. Verify AWS role has proper WIF trust relationship with Snowflake")
+        print("2. Check that Snowflake WIF user exists and is mapped to correct AWS role ARN")
+        print("3. Ensure EC2 instance is using the correct IAM role")
+        print("4. Verify network connectivity to Snowflake endpoints")
+        return 1
+    
+    return 0
 
-account = getenv("SNOWFLAKE_ACCOUNT")
-user    = getenv("SNOWFLAKE_USER")
-role    = getenv("SNOWFLAKE_ROLE", "")
-wh      = getenv("SNOWFLAKE_WAREHOUSE", "")
-db      = getenv("SNOWFLAKE_DATABASE", "")
-schema  = getenv("SNOWFLAKE_SCHEMA", "")
-
-# Default comes from /etc/profile.d/snowflake-test.sh
-authent = getenv("SNOWFLAKE_AUTHENTICATOR", getenv("SNOWFLAKE_DEFAULT_AUTHENTICATOR", "oauth"))
-
-conn_args = {"account": account, "user": user, "authenticator": authent}
-
-if authent.lower() == "oauth":
-    token = getenv("SNOWFLAKE_OAUTH_TOKEN", required=True)
-    conn_args["token"] = token
-elif authent.lower() in ("externalbrowser", "snowflake"):
-    # externalbrowser: device flow; "snowflake": native auth (password if set)
-    password = getenv("SNOWFLAKE_PASSWORD")
-    if password:
-        conn_args["password"] = password
-else:
-    # Fallback to password for other authenticators if provided
-    password = getenv("SNOWFLAKE_PASSWORD", required=True)
-    conn_args["password"] = password
-
-if role:
-    conn_args["role"] = role
-if wh:
-    conn_args["warehouse"] = wh
-if db:
-    conn_args["database"] = db
-if schema:
-    conn_args["schema"] = schema
-
-print("snowflake-connector-python version:", sf.__version__)
-
-with sf.connect(**conn_args) as conn:
-    with conn.cursor() as cur:
-        cur.execute("select current_user(), current_account(), current_version()")
-        print(cur.fetchone())
+if __name__ == "__main__":
+    exit(main())

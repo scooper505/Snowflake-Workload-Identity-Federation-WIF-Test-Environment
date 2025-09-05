@@ -22,23 +22,14 @@ provider "aws" {
 # You must identify which authN mechninism you will use. You’ll pick *either* key-pair auth or OAuth depending on how you set variables.
 # Can comment out Snowflake parts to just test AWS
 # Option A: Key-pair authentication
+
+
 provider "snowflake" {
-  organization_name      = var.snowflake_organization_name
-  account_name           = var.snowflake_account_name
-  user                   = var.snowflake_username
-  role                   = var.snowflake_role
-  authenticator          = "SNOWFLAKE_JWT"
-  private_key            = file(var.snowflake_private_key_path)
-  private_key_passphrase = var.snowflake_private_key_passphrase
-  # Enable preview features
+  organization_name        = var.snowflake_organization_name
+  account_name             = var.snowflake_account_name
+  user                     = var.snowflake_username
+  role                     = var.snowflake_role
+  authenticator            = "SNOWFLAKE_JWT"
   preview_features_enabled = ["snowflake_current_account_datasource"]
 }
 
-
-# Option B: OAuth (fits nicely with WIF/token broker flows)
-# provider "snowflake" {
-#   account             = var.snowflake_account
-#   region              = var.snowflake_region
-#   role                = var.snowflake_role
-#   oauth_access_token  = var.snowflake_oauth_token
-# }

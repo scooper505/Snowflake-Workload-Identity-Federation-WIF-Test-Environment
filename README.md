@@ -74,15 +74,15 @@ Create a `terraform.tfvars` file in the project root with the following configur
 
 ```hcl
 # _____AWS INFRASTRUCTURE_____
-region    = "us-east-1"
-vpc_id    = "vpc-0d1c5a2b340a3fb46"
-subnet_id = "subnet-0708f716bab44d878"
+region    = "YOUR REGION"
+vpc_id    = "YOUR VPC ID"
+subnet_id = "YOUR SUBNET IT"
 
-# _____SNOWFLAKE CONNECTION_____
-snowflake_organization_name = "SFSENORTHAMERICA"
-snowflake_account_name      = "SECURITYLAB2"
-snowflake_role              = "SECURITYADMIN"
-snowflake_username          = "SCOOP_TF_AUTOMATION"
+# _____SNOWFLAKE CONNECTION FOR TERRAFORM AUTMATION_____
+snowflake_organization_name = "ORG NAME"
+snowflake_account_name      = "ACCOUNT NAME"
+snowflake_role              = "SNOWFLAKE ROLE"
+snowflake_username          = "YOUR USERNAME"
 
 
 
@@ -136,45 +136,24 @@ tags = {
 - **Security Group**: Minimal access (egress only, no inbound SSH)
 
 ### Snowflake Resources
-- **Account Role**: `SCOOP_WIF_TF_TEST_ROLE` for permission management
-- **Service User**: `SCOOP_WIF_TEST_USER` with WORKLOAD_IDENTITY mapping
+- **Account Role**: WIF TEST SNOWFLAKE ROLE for permission management
+- **Service User**: WIF TEST SNOWFLAKE USER with WORKLOAD_IDENTITY mapping
 - **Privileges**: Grants on warehouse, database, and schema for testing
 
 ### Software Installation (via user-data)
 - **Python 3.11** (Amazon Linux 2023) or **Python 3.10+** (Ubuntu 22.04)
 - **Snowflake Connector**: `snowflake-connector-python>=3.14`
-- **Test Scripts**: Ready-to-use connectivity validation
-- **SSM Agent**: For secure remote access
+- **Test Scripts**: Python script added to the EC2 via userdata. Test script uses Snowflake Python connector to connect to your Snowflake account.
+- **SSM Agent**: To connect to the test EC2.
 
 ## 🧪 Testing WIF Authentication
 
-### Method 1: OAuth Token (Recommended)
-```bash
-export SNOWFLAKE_AUTHENTICATOR=oauth
-export SNOWFLAKE_OAUTH_TOKEN="your-oauth-access-token"
-export SNOWFLAKE_ACCOUNT="SECURITYLAB2"
-export SNOWFLAKE_USER="SCOOP_WIF_TEST_USER"
-export SNOWFLAKE_ROLE="SCOOP_WIF_TF_TEST_ROLE"
-export SNOWFLAKE_WAREHOUSE="BI_MEDIUM_WH"
-export SNOWFLAKE_DATABASE="CITIBIKE"
-export SNOWFLAKE_SCHEMA="DEMO"
 
-python /opt/snowflake-test/test_snowflake.py
-```
-
-### Method 2: External Browser (Interactive)
-```bash
-export SNOWFLAKE_AUTHENTICATOR=externalbrowser
-export SNOWFLAKE_ACCOUNT="SECURITYLAB2"
-export SNOWFLAKE_USER="SCOOP_WIF_TEST_USER"
-
-python /opt/snowflake-test/test_snowflake.py
-```
 
 ### Expected Output
 ```
 snowflake-connector-python version: 3.14.x
-('SCOOP_WIF_TEST_USER', 'SECURITYLAB2', '8.x.x')
+('<YOUR WIF TEST USER>', '<YOUR ACCOUNT>', '8.x.x')
 ```
 
 ## 🔍 Troubleshooting
