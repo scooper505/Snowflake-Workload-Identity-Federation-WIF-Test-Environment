@@ -6,7 +6,7 @@ resource "aws_instance" "this" {
   subnet_id                   = var.subnet_id
   vpc_security_group_ids      = [aws_security_group.ec2.id]
   iam_instance_profile        = aws_iam_instance_profile.this.name
-  associate_public_ip_address = false
+  associate_public_ip_address = true
 
   # Pass in the rendered user-data from locals.tf (templatefile of userdata.sh.tmpl)
   user_data                   = local.user_data
@@ -43,4 +43,4 @@ resource "aws_instance" "this" {
 # - user_data is rendered in locals.tf:
 #     locals { user_data = templatefile("${path.module}/userdata.sh.tmpl", {...}) }
 #
-# - SSM access is enabled via the role in iam.tf (AmazonSSMManagedInstanceCore) and
+# - SSM access is enabled via the role in iam.tf (AmazonSSMManagedInstanceCore) and instance profile in iam.tf

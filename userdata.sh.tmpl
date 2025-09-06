@@ -36,7 +36,7 @@ install -d -m 0755 "$${APP_DIR}"
 $PYBIN -m venv "$${VENV_DIR}"
 source "$${VENV_DIR}/bin/activate"
 python -m pip install --upgrade pip
-python -m pip install "snowflake-connector-python>=3.14"
+python -m pip install "snowflake-connector-python>=3.17"
 
 # --- drop test script from templated content ---
 cat > "$${TEST_SCRIPT}" <<'PYEOF'
