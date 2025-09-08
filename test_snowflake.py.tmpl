@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Simplified Snowflake WIF Test Script
+Simple Snowflake WIF Test Script
 Tests Workload Identity Federation (WIF) connection from AWS EC2 to Snowflake
 """
 import os
@@ -17,7 +17,7 @@ def main():
         # Connect to Snowflake using WIF
         print("Attempting WIF connection...")
         conn = snowflake.connector.connect(
-            account='${snowflake_organization_name}-${snowflake_account_name}.privatelink',
+            account='${snowflake_organization_name}-${snowflake_account_name}',
             authenticator='WORKLOAD_IDENTITY',
             workload_identity_provider='AWS'  # Provider is optional since the driver is capable of auto discovering
         )

@@ -170,6 +170,12 @@ source /opt/snowflake-test/venv/bin/activate
 
 # Verify installation
 python -c "import snowflake.connector; print(snowflake.connector.__version__)"
+
+# Review the script
+sed -n '1,80p' /opt/snowflake-test/test_snowflake.py
+
+# Run the connection test scrip
+python /opt/snowflake-test/test_snowflake.py
 ```
 
 ### Snowflake Authentication Errors
