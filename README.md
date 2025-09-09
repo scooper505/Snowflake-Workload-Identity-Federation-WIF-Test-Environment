@@ -2,13 +2,13 @@
 
 This Terraform project creates a complete testing environment for **Snowflake Workload Identity Federation (WIF)**, enabling secure AWS-to-Snowflake authentication using AWS IAM roles instead of traditional username/password credentials.
 
-## 🎯 Project Overview
+## Project Overview
 
 The infrastructure consists of two main components:
 - **AWS Resources**: Secure EC2 test environment with proper IAM roles
 - **Snowflake Resources**: WIF-enabled service user with role-based permissions
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
@@ -20,7 +20,7 @@ The infrastructure consists of two main components:
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Terraform ≥ 1.5.0
@@ -118,16 +118,16 @@ tags = {
 }
 ```
 
-## 🔒 Security Features
+##  Security Features
 
-- **🚫 No SSH Access**: Uses AWS SSM Session Manager for secure shell access
-- **🔐 IMDSv2 Enforced**: Prevents SSRF attacks on instance metadata
-- **💾 Encrypted Storage**: All EBS volumes encrypted at rest
-- **🌐 Private Networking**: No public IP addresses assigned
-- **🔑 Least Privilege IAM**: Minimal permissions for WIF functionality
-- **🛡️ Security Groups**: Locked down with minimal egress rules
+- ** No SSH Access**: Uses AWS SSM Session Manager for secure shell access
+- ** IMDSv2 Enforced**: Prevents SSRF attacks on instance metadata
+- ** Encrypted Storage**: All EBS volumes encrypted at rest
+- ** Private Networking**: No public IP addresses assigned
+- ** Least Privilege IAM**: Minimal permissions for WIF functionality
+- ** Security Groups**: Locked down with minimal egress rules
 
-## 📋 What Gets Created
+##  What Gets Created
 
 ### AWS Resources
 - **EC2 Instance**: Test environment (t3.micro by default)
@@ -146,7 +146,7 @@ tags = {
 - **Test Scripts**: Python script added to the EC2 via userdata. Test script uses Snowflake Python connector to connect to your Snowflake account.
 - **SSM Agent**: To connect to the test EC2.
 
-## 🧪 Testing WIF Authentication
+
 
 
 
@@ -188,7 +188,7 @@ python /opt/snowflake-test/test_snowflake.py
 - Check DNS resolution if using custom DNS servers
 - Consider VPC endpoints for enhanced security
 
-## 📊 Outputs
+##  Outputs
 
 After successful deployment, you can access these outputs:
 
@@ -225,20 +225,20 @@ wif_test_schema   = "YOUR_SCHEMA"
 ami_id = "ami-your-custom-ami-id"
 ```
 
-## 🧹 Cleanup
+## Cleanup
 
 To destroy all resources:
 ```bash
 terraform destroy -auto-approve
 ```
 
-## 📚 Additional Resources
+##  Additional Resources
 
 - [Snowflake Workload Identity Federation Documentation](https://docs.snowflake.com/en/user-guide/admin-workload-identity-federation)
 - [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html)
 - [Snowflake Python Connector](https://docs.snowflake.com/en/developer-guide/python-connector/python-connector)
 
-## ⚠️ Important Notes
+##  Important Notes
 
 1. **Private Key Security**: Never commit your Snowflake private key to version control
 2. **Terraform State**: Contains sensitive data - secure your state backend
