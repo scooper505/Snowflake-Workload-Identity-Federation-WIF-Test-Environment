@@ -136,7 +136,7 @@ wif_role_name = "WIF_TEST_ROLE"
 
 ## Cleanup
 Destroy all resources with:
-```bash
+
 terraform destroy -auto-approve
 
 
