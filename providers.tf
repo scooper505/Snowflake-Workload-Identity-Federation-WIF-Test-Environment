@@ -1,35 +1,35 @@
 terraform {
   required_version = ">= 1.5.0"
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 5.0"
+      version = "~> 6.12" # More specific constraint for stability
     }
     snowflake = {
       source  = "snowflakedb/snowflake"
-      version = ">= 2.0.0"
+      version = "~> 2.6.0" # Pinned to current version from your lock file
     }
   }
 }
 
-
-# ____AWS PROVIDER____
+# AWS Provider
 provider "aws" {
   region = var.region
 }
 
-# ___SNOWFLAKE PROVIDER___
-# You must identify which authN mechninism you will use. You’ll pick *either* key-pair auth or OAuth depending on how you set variables.
-# Can comment out Snowflake parts to just test AWS
-# Option A: Key-pair authentication
-
+# Snowflake Provider
+# Authentication Options:
+# Option A: Key-pair authentication (current configuration)
+# Option B: OAuth - comment out below and use OAuth variables instead
 
 provider "snowflake" {
-  organization_name        = var.snowflake_organization_name
-  account_name             = var.snowflake_account_name
-  user                     = var.snowflake_username
-  role                     = var.snowflake_role
-  authenticator            = "SNOWFLAKE_JWT"
+  organization_name = var.snowflake_organization_name
+  account_name      = var.snowflake_account_name
+  user              = var.snowflake_username
+  role              = var.snowflake_role
+  authenticator     = "SNOWFLAKE_JWT" # Requires private_key and corresponding public key setup
+  
+  # Optional: Enable preview features if needed
   preview_features_enabled = ["snowflake_current_account_datasource"]
 }
-
