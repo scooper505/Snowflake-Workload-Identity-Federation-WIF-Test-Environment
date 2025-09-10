@@ -55,10 +55,3 @@ output "wif_test_user" {
   value       = var.wif_user_name
 }
 
-# output "snowflake_security_integration_name" {
-#   description = "Name of the Snowflake SECURITY INTEGRATION (WIF) created by this module"
-#   value       = snowflake_security_integration.this.name
-# }
-
-
-# Note: WIF-related outputs are defined in snowflake.tf to keep them colocated with the resources

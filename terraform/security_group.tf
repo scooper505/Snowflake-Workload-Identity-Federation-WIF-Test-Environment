@@ -23,17 +23,7 @@ resource "aws_vpc_security_group_ingress_rule" "deny_all_inbound" {
   description       = "Default deny all inbound traffic"
 }
 
-# Optional: SSH access (disabled by default)
-resource "aws_vpc_security_group_ingress_rule" "ssh" {
-  count = var.allow_ssh ? 1 : 0
 
-  security_group_id = aws_security_group.ec2.id
-  cidr_ipv4         = var.ssh_cidr
-  ip_protocol       = "tcp"
-  from_port         = 22
-  to_port           = 22
-  description       = "SSH access from specified CIDR block"
-}
 
 # Egress: Allow outbound HTTPS for package installation and Snowflake connectivity
 resource "aws_vpc_security_group_egress_rule" "https_outbound" {
