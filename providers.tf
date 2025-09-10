@@ -29,7 +29,7 @@ provider "snowflake" {
   user              = var.snowflake_username
   role              = var.snowflake_role
   authenticator     = "SNOWFLAKE_JWT" # Requires private_key and corresponding public key setup
-  
+
   # Optional: Enable preview features if needed
   preview_features_enabled = ["snowflake_current_account_datasource"]
 }
