@@ -13,7 +13,7 @@ terraform {
 }
 
 
-# ____AWS PROIVDER____
+# ____AWS PROVIDER____
 provider "aws" {
   region = var.region
 }
