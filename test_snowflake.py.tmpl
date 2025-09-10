@@ -22,7 +22,7 @@ def main():
             workload_identity_provider='AWS'  # Provider is optional since the driver is capable of auto discovering
         )
         
-        print("✅ WIF Connection established successfully!")
+        print("WIF Connection established successfully!")
         
         # Create a cursor
         cur = conn.cursor()
@@ -56,10 +56,10 @@ def main():
         
         cur.close()
         conn.close()
-        print("\n✅ WIF test completed successfully! Connection and permissions verified.")
+        print("\n WIF test completed successfully! Connection and permissions verified.")
         
     except Exception as e:
-        print(f"\n❌ WIF Connection Failed: {str(e)}")
+        print(f"\n WIF Connection Failed: {str(e)}")
         print("\nTroubleshooting tips:")
         print("1. Verify AWS role has proper WIF trust relationship with Snowflake")
         print("2. Check that Snowflake WIF user exists and is mapped to correct AWS role ARN")
