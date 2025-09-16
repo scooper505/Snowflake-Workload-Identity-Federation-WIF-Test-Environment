@@ -1,6 +1,21 @@
 # Snowflake Workload Identity Federation (WIF) Test Environment
 
-A Terraform module to deploy a secure AWS EC2 instance for testing **Snowflake Workload Identity Federation (WIF)**. This enables secure authentication to Snowflake using an AWS IAM role, eliminating the need for password or key-based credentials.
+A Terraform module to deploy a test AWS EC2 instance for testing **Snowflake Workload Identity Federation (WIF)**. This enables secure authentication to Snowflake using an AWS IAM role, eliminating the need for password or key-based credentials.
+
+## Architecture Summary
+
+This module creates the following resources:
+
+-   **In AWS:**
+    -   An EC2 instance in a subnet of your choosing.
+    -   An IAM Role with a trust policy for Snowflake Workload Identity Federation (WIF).
+    -   A Security Group with minimal, necessary rules.
+    -   An IAM Instance Profile.
+
+-   **In Snowflake:**
+    -   A database Role (`WIF_TEST_ROLE`) with permissions.
+    -   A Service User (`WIF_TEST_USER`) configured with a the corresponding AWS IAM Role to enable `WORKLOAD_IDENTITY` authentication.
+    -   Permission grants on a warehouse, database, and schema set by you.
 
 ##  Quick Start
 
@@ -14,6 +29,7 @@ A Terraform module to deploy a secure AWS EC2 instance for testing **Snowflake W
 ### Deployment Steps
 
 1.  **Clone the Repository**
+Choose the file location to host the repo and clone the repository and navigate into the repo.
     ```bash
     git clone https://github.com/scooper505/Snowflake-Workload-Identity-Federation-WIF-Test-Environment
     cd Snowflake-Workload-Identity-Federation-WIF-Test-Environment
@@ -42,7 +58,7 @@ A Terraform module to deploy a secure AWS EC2 instance for testing **Snowflake W
     ```
 
 3.  **Deploy the Infrastructure**
-    # Once you have your access confired and variables configured, run your Terraform commands to deploy your resources via Terraform
+    Once you have your access confirmed and variables configured, run your Terraform commands to deploy your resources via Terraform
     
     ```bash
     terraform init
@@ -51,42 +67,15 @@ A Terraform module to deploy a secure AWS EC2 instance for testing **Snowflake W
     ```
 
 4.  **Connect and Test**
-    Connect to the test instance via AWS SSM Session Manager :
+    - Connect to the test instance via AWS SSM Session Manager. Connection can be made via AWS CLI or via the AWS consol UI. For UI connection, navigate to created EC2 instance, right click > connect > SSM Session Manager
+    For AWS CLI complete the following :
     ```bash
     aws ssm start-session --target $(terraform output -raw instance_id)
     ```
-    Once connected, run the test script:
+    
+    Once connected, activate the environment and run the test script:
     ```bash
     sudo su -
+    source /opt/snowflake-test/venv/bin/activate
     python3 /opt/snowflake-test/test_snowflake.py
     ```
-
-## Architecture
-
-This module creates the following resources:
-
--   **In AWS:**
-    -   An EC2 instance in a private subnet.
-    -   An IAM Role with a trust policy for Snowflake WIF.
-    -   A Security Group with minimal, necessary rules.
-    -   An IAM Instance Profile.
-
--   **In Snowflake:**
-    -   A database Role (`WIF_TEST_ROLE`) with permissions.
-    -   A Service User (`WIF_TEST_USER`) configured for `WORKLOAD_IDENTITY` authentication.
-    -   Necessary grants on a warehouse, database, and schema.
-
-##  Security Features
-
--   **No SSH Access**: Secure access is provided exclusively via AWS Systems Manager (SSM).
--   **IMDSv2 Enforced**: Protects against SSRF attacks by requiring the latest instance metadata service.
--   **Least Privilege IAM**: The EC2 IAM role is granted only the permissions essential for WIF.
--   **Private Networking**: The EC2 instance is deployed without a public IP address.
--   **Encrypted Storage**: All associated EBS volumes are encrypted at rest.
-
-##  Cleanup
-
-To destroy all created resources and avoid ongoing AWS charges, run:
-
-```bash
-terraform destroy
