@@ -6,8 +6,9 @@ A Terraform module to deploy a secure AWS EC2 instance for testing **Snowflake W
 
 ### Prerequisites
 - **Terraform** >= 1.5.0
+- A configured Terraform to Snowflake connection - A Snowflake user with appropriate permissions to support Terraform automation in Snowflake 
+- **Snowflake** ACCOUNTADMIN privileges may also help to confirm resouces
 - **AWS CLI** configured with appropriate permissions
-- **Snowflake** ACCOUNTADMIN privileges
 - An existing AWS **VPC and private subnet**
 
 ### Deployment Steps
@@ -22,7 +23,7 @@ A Terraform module to deploy a secure AWS EC2 instance for testing **Snowflake W
     Create a `terraform.tfvars` file with your specific values:
     ```hcl
     # AWS Infrastructure
-    region    = "us-east-1"
+    region    = "your AWS region"
     vpc_id    = "vpc-yourvpcid"
     subnet_id = "subnet-yoursubnetid"
 
@@ -34,16 +35,23 @@ A Terraform module to deploy a secure AWS EC2 instance for testing **Snowflake W
     # WIF Test Resources (to be created in Snowflake)
     wif_user_name = "WIF_TEST_USER"
     wif_role_name = "WIF_TEST_ROLE"
+
+    # NOTE: Depending on the authentication being used to connect Terraform to Snowflake, you may also want to include variables for key pair location if using key pair.
+    # Example: snowflake_private_key_path = "<KEY PATH HERE>"
+
     ```
 
 3.  **Deploy the Infrastructure**
+    # Once you have your access confired and variables configured, run your Terraform commands to deploy your resources via Terraform
+    
     ```bash
     terraform init
+    terraform plan
     terraform apply
     ```
 
 4.  **Connect and Test**
-    Connect to the test instance via AWS SSM Session Manager (no SSH key needed):
+    Connect to the test instance via AWS SSM Session Manager :
     ```bash
     aws ssm start-session --target $(terraform output -raw instance_id)
     ```
