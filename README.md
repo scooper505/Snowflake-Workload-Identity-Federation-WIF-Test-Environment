@@ -29,14 +29,14 @@ This module creates the following resources:
 ### Deployment Steps
 
 1.  **Clone the Repository**
-Choose the file location to host the repo and clone the repository and navigate into the repo.
+- Choose the file location to host the repo and clone the repository and navigate into the repo.
     ```bash
     git clone https://github.com/scooper505/Snowflake-Workload-Identity-Federation-WIF-Test-Environment
     cd Snowflake-Workload-Identity-Federation-WIF-Test-Environment
     ```
 
 2.  **Configure Variables**
-    Create a `terraform.tfvars` file with your specific values:
+    - Create a `terraform.tfvars` file with your specific values:
     ```hcl
     # AWS Infrastructure
     region    = "your AWS region"
@@ -58,7 +58,7 @@ Choose the file location to host the repo and clone the repository and navigate 
     ```
 
 3.  **Deploy the Infrastructure**
-    Once you have your access confirmed and variables configured, run your Terraform commands to deploy your resources via Terraform
+    - Once you have your access confirmed and variables configured, run your Terraform commands to deploy your resources via Terraform
     
     ```bash
     terraform init
